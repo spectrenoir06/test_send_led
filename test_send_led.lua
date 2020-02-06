@@ -2,19 +2,21 @@
 
 local LEDsController = require "lib.LEDsController.LEDsController"
 
-local FPS = 100
-local LED_NB = 512
+local FPS = 40
+local LED_NB = 400
 local ctn = 0
 
-local controller = LEDsController:new(LED_NB, "BRO888", "192.168.1.198")
+local controller = LEDsController:new(LED_NB, "artnet", "192.168.1.120")
+controller.rgbw = true
 -- controller:start_dump("RLE888")
 
 while true do
-
-	for i=0,LED_NB-1 do
-		local c = color_wheel((math.floor(i/8)+ctn)*8)
-		-- local c = color_wheel(i+ctn)
-		controller.leds[i+1] = {c[1], c[2], c[3]}
+	-- controller:sendArtnetPoll()
+	for j=0,3 do
+		for i=0,100-1 do
+			local c = color_wheel(j*(256/5)+ctn)
+			controller.leds[i+1+j*100] = {c[1], c[2], c[3], 0}
+		end
 	end
 	controller:send(1/FPS)
 	-- controller:dump()
